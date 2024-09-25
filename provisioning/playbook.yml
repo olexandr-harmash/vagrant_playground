@@ -1,0 +1,21 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Set HTTP proxy
+      lineinfile:
+        path: /etc/environment
+        line: http_proxy={{http_proxy}}
+        state: present
+
+    - name: Set HTTPS proxy
+      lineinfile:
+        path: /etc/environment
+        line: https_proxy={{https_proxy}}
+        state: present
+
+    - name: Set SOCKS host
+      lineinfile:
+        path: /etc/environment
+        line: socks_host={{socks_host}}
+        state: present
