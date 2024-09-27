@@ -2,6 +2,8 @@
 
 ## Simple project to play with vagrant and ansible automatization
 
+### Can ban account -><-
+
 **Vagrantfile**
 Used ubuntu/jammy64 box with ubuntu 22.04 operation system.
 
@@ -40,15 +42,45 @@ Set up ansible provision and describe configuration for machines.
 
 **provisioning**
 Folder that consist ansible playbooks and their variables.
+It install all python libs for automatization and running scripts. 
+```yml
+  - name: Обновить список пакетов
+      apt:
+        update_cache: yes
+
+    - name:
+      apt:
+        name: python3-pip
+        state: present
+
+    - name: Установка или обновление библиотек opentele и telethon
+      pip:
+        name:
+          - opentele
+          - telethon
+        state: latest
+```
 
 **playbook.yml** 
 Set proxy variables from group_vars folder.
 
 ```yml
-  tasks:
-    - name: Set HTTP proxy
-      lineinfile:
-        path: /etc/environment
-        line: http_proxy={{http_proxy}}
-        state: present
+ - name: Append proxy settings to environment file
+      shell: |
+        awk '!seen[$0]++' /home/vagrant/shared/proxy.conf /etc/environment > /etc/environment
 ```
+
+**tdata**
+
+Consists proxy.conf and telegram session data for every node.
+It will be shared into vm node.
+
+```ruby
+  # Set up synced folders for data sharing
+  node.vm.synced_folder "./tdata/node-#{i}/", "/home/vagrant/shared"
+
+  node.vm.provision "file", source: "./run_session.py", destination: "/home/vagrant/"
+```
+
+**run_session.py**
+Connect desktop session to teleton client need to be refactored.

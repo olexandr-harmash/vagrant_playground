@@ -2,7 +2,26 @@
 - hosts: all
   become: yes
   tasks:
+    - name: Обновить список пакетов
+      apt:
+        update_cache: yes
+
+    - name:
+      apt:
+        name: python3-pip
+        state: present
+
+    - name: Установка или обновление библиотек opentele и telethon
+      pip:
+        name:
+          - opentele
+          - telethon
+        state: latest
+
     - name: Append proxy settings to environment file
       shell: |
-        awk '!seen[$0]++' /home/vagrant/tdata/proxy.conf /etc/environment > /etc/environment
+        awk '!seen[$0]++' /home/vagrant/shared/proxy.conf /etc/environment > /etc/environment
+
+    - name: Выполнить Python-скрипт
+      command: python3 /home/vagrant/run_session.py
 

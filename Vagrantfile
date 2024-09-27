@@ -1,7 +1,7 @@
 Vagrant.configure("2") do |config|
   
   # Nodes amount
-  N = 2
+  N = 1
 
   # Initialize a hash to store host variables
   Host_vars = {}
@@ -21,7 +21,9 @@ Vagrant.configure("2") do |config|
       node.vm.box = "ubuntu/jammy64"
 
       # Set up synced folders for data sharing
-      node.vm.synced_folder "./tdata/node-#{i}/", "/home/vagrant/tdata/"
+      node.vm.synced_folder "./tdata/node-#{i}/", "/home/vagrant/shared"
+
+      node.vm.provision "file", source: "./run_session.py", destination: "/home/vagrant/"
 
       # Execute Ansible provisioner only once all machines are up
       if i == N
